@@ -47,13 +47,13 @@ func (ctrl *TeacherController) GetTeacherByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid teacher ID"})
 		return
 	}
-	teahcer, err := ctrl.teacherService.GetTeacherByID(uint(id))
+	teacher, err := ctrl.teacherService.GetTeacherByID(uint(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Teacher not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, teahcer)
+	c.JSON(http.StatusOK, teacher)
 
 }
 
@@ -74,4 +74,18 @@ func (ctrl *TeacherController) UpdateTeacher(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, teacher)
+}
+
+func (ctrl *TeacherController) DeleteTeacher(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid teacher ID"})
+		return
+	}
+	if err := ctrl.teacherService.DeleteTeacher(uint(id)); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusNoContent, gin.H{"message": "Teacher is deleted"})
+
 }
