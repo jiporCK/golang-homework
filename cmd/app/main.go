@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"go-homework/internal/database"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+
+	database.InitDB()
+
 }
