@@ -11,18 +11,20 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-	var err error
-	DB, err = gorm.Open(sqlite.Open("golang-homework.db"), &gorm.Config{})
-	if err != nil {
-		log.Fatalf("Failed to connect to the database: %v", err)
-	}
+    var err error
+    DB, err = gorm.Open(sqlite.Open("golang-homework.db"), &gorm.Config{})
+    if err != nil {
+        log.Fatalf("Failed to connect to the database: %v", err)
+    }
 
-	DB.AutoMigrate(&entity.Course{}, &entity.Teacher{})
-	if err != nil {
-		log.Fatalf("Failed to auto-migrate the database: %v", err)
-	}
+    err = DB.AutoMigrate(&entity.Course{}, &entity.Teacher{})
+    if err != nil {
+        log.Fatalf("Failed to auto-migrate the database: %v", err)
+    }
 
+    log.Println("Database connection successfully initialized")
 }
+
 
 func GetDB() *gorm.DB {
 	return DB

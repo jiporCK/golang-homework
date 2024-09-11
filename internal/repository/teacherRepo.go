@@ -15,28 +15,32 @@ type TeacherRepository interface {
 }
 
 type TeacherRepo struct {
-	db *gorm.DB
+	DB *gorm.DB
 }
 
 func NewTeacherRepo(db *gorm.DB) *TeacherRepo {
-	return &TeacherRepo{db: db}
+    return &TeacherRepo{DB: db}
 }
 
 func (repo *TeacherRepo) CreateTeacher(teacher *teacher.Teacher) error {
-	return repo.db.Create(teacher).Error
+	return repo.DB.Create(teacher).Error
 }
 
 func (repo *TeacherRepo) GetAllTeachers() ([]teacher.Teacher, error) {
-	var teachers []teacher.Teacher
-
-	err := repo.db.Preload("Teachers").Find(&teachers).Error
-	return teachers, err
+    var teachers []teacher.Teacher
+    err := repo.DB.Preload("Courses").Find(&teachers).Error
+    if err != nil {
+        return nil, err
+    }
+    return teachers, nil
 }
+
+
 
 func (repo *TeacherRepo) GetTeacherByID(id uint) (*teacher.Teacher, error) {
 	var teacher teacher.Teacher
 
-	err := repo.db.First(&teacher, id).Error
+	err := repo.DB.First(&teacher, id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -48,12 +52,12 @@ func (repo *TeacherRepo) UpdateTeacher(id uint, updateTeacher *teacher.Teacher) 
 	
 	var teacher teacher.Teacher
 
-	err := repo.db.First(&teacher, id).Error
+	err := repo.DB.First(&teacher, id).Error
 	if err != nil {
 		return err
 	}
 
-	err = repo.db.Model(teacher).Updates(updateTeacher).Error
+	err = repo.DB.Model(teacher).Updates(updateTeacher).Error
 	if err != nil {
 		return err
 	}
@@ -63,14 +67,15 @@ func (repo *TeacherRepo) UpdateTeacher(id uint, updateTeacher *teacher.Teacher) 
 }
 
 func (repo *TeacherRepo) DeleteTeacher(id uint) error {
-	return repo.db.Delete(&teacher.Teacher{}, id).Error
+	return repo.DB.Delete(&teacher.Teacher{}, id).Error
 }
 
 func (repo *TeacherRepo) GetTeacherByPhone(phone string) (*teacher.Teacher, error) {
-	var teacher teacher.Teacher
-	err := repo.db.Where("phone = ?", phone).First(&teacher, phone).Error
-	if err != nil {
-		return nil, err
-	}
-	return &teacher, nil
+    var teacher teacher.Teacher
+    err := repo.DB.Where("phone = ?", phone).First(&teacher).Error
+    if err != nil {
+        return nil, err
+    }
+    return &teacher, nil
 }
+

@@ -9,40 +9,39 @@ import (
 )
 
 type TeacherService struct{
-	teacherRepo *repository.TeacherRepo
+	TeacherRepo *repository.TeacherRepo
 }
 
-func NewTeacherService(teacherRepo *repository.TeacherRepo) *TeacherService {
-	return &TeacherService{teacherRepo: teacherRepo}
+func NewTeacherService(TeacherRepo *repository.TeacherRepo) *TeacherService {
+	return &TeacherService{TeacherRepo: TeacherRepo}
 }
 
 func (s *TeacherService) CreateTeacher(teacher *entity.Teacher) error {
-	existingTeacher, err := s.teacherRepo.GetTeacherByPhone(teacher.Phone)
+    existingTeacher, err := s.TeacherRepo.GetTeacherByPhone(teacher.Phone)
+    if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+        return err
+    }
 
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
-		return err
-	}
+    if existingTeacher != nil {
+        return errors.New("teacher already exists")
+    }
 
-	if existingTeacher != nil {
-		return errors.New("teacher already exists")
-	}
-
-	return s.teacherRepo.CreateTeacher(teacher)
-
+    return s.TeacherRepo.CreateTeacher(teacher)
 }
 
+
 func (s *TeacherService) GetTeacherByID(id uint) (*entity.Teacher, error) {
-	return s.teacherRepo.GetTeacherByID(id)
+	return s.TeacherRepo.GetTeacherByID(id)
 }
 
 func (s *TeacherService) GetAllTeachers() ([]entity.Teacher, error) {
-	return s.teacherRepo.GetAllTeachers()
+	return s.TeacherRepo.GetAllTeachers()
 }
 
 func (s *TeacherService) UpdateTeacher(id uint, updateTeacher *entity.Teacher) error {
-	return s.teacherRepo.UpdateTeacher(id, updateTeacher)
+	return s.TeacherRepo.UpdateTeacher(id, updateTeacher)
 }
 
 func (s *TeacherService) DeleteTeacher(id uint) error {
-	return s.teacherRepo.DeleteTeacher(id)
+	return s.TeacherRepo.DeleteTeacher(id)
 }

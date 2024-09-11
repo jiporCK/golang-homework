@@ -1,25 +1,30 @@
 package routes
 
 import (
-	// "go-homework/internal/controller"
-	// "go-homework/internal/repository"
-	// "go-homework/internal/usecase"
+	"go-homework/internal/controller"
 
 	"github.com/gin-gonic/gin"
 )
 
-func SetUpRouter(r *gin.Engine) {
+func SetUpRouter(r *gin.Engine, teacherController *controller.TeacherController, courseController *controller.CourseController) *gin.Engine {
 
-	// Initialize repositories
-	// courseRepository := &repository.CourseRepo{}
-	// teacherRepository := &repository.TeacherRepo{}
+	teacherRoutes := r.Group("/teachers")
+	{
+		teacherRoutes.POST("", teacherController.CreateTeacher)        
+		teacherRoutes.GET("", teacherController.GetAllTeachers)       
+		teacherRoutes.GET("/:id", teacherController.GetTeacherByID)    
+		teacherRoutes.PUT("/:id", teacherController.UpdateTeacher)     
+		teacherRoutes.DELETE("/:id", teacherController.DeleteTeacher)  
+	}
 
-	// Initialize services with repositories
-	// courseService := &usecase.CourseService{CourseRepo: courseRepository}
-	// teacherService := &usecase.TeacherService{TeacherRepo: teacherRepository}
+	courseRoutes := r.Group("/courses") 
+	{
+		courseRoutes.POST("", courseController.CreateCourse)
+		courseRoutes.GET("", courseController.GetAllCourses)
+		courseRoutes.GET("/:id", courseController.GetCourseByID)
+		courseRoutes.PUT("/:id", courseController.UpdateCourse)
+		courseRoutes.DELETE("/:id", courseController.DeleteTeacher)
+	}
 
-	// // Initialize controllers with services
-	// courseController := &controller.CourseController{CourseService: courseService}
-	// teacherController := &controller.TeacherController{TeacherService: teacherService}
-
+	return r
 }

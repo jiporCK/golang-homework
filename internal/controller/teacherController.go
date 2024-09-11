@@ -10,7 +10,7 @@ import (
 )
 
 type TeacherController struct {
-	teacherService usecase.TeacherService
+	TeacherService usecase.TeacherService
 }
 
 func (ctrl *TeacherController) CreateTeacher(c *gin.Context) {
@@ -21,7 +21,7 @@ func (ctrl *TeacherController) CreateTeacher(c *gin.Context) {
 		return
 	}
 
-	if err := ctrl.teacherService.CreateTeacher(&teacher); err != nil {
+	if err := ctrl.TeacherService.CreateTeacher(&teacher); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -32,7 +32,7 @@ func (ctrl *TeacherController) CreateTeacher(c *gin.Context) {
 
 func (ctrl *TeacherController) GetAllTeachers(c *gin.Context) {
 	
-	teachers, err := ctrl.teacherService.GetAllTeachers()
+	teachers, err := ctrl.TeacherService.GetAllTeachers()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
@@ -47,7 +47,7 @@ func (ctrl *TeacherController) GetTeacherByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid teacher ID"})
 		return
 	}
-	teacher, err := ctrl.teacherService.GetTeacherByID(uint(id))
+	teacher, err := ctrl.TeacherService.GetTeacherByID(uint(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Teacher not found"})
 		return
@@ -69,7 +69,7 @@ func (ctrl *TeacherController) UpdateTeacher(c *gin.Context) {
 		return
 	}
 	teacher.ID = uint(id)
-	if err := ctrl.teacherService.UpdateTeacher(teacher.ID, &teacher); err != nil{
+	if err := ctrl.TeacherService.UpdateTeacher(teacher.ID, &teacher); err != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -82,7 +82,7 @@ func (ctrl *TeacherController) DeleteTeacher(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid teacher ID"})
 		return
 	}
-	if err := ctrl.teacherService.DeleteTeacher(uint(id)); err != nil {
+	if err := ctrl.TeacherService.DeleteTeacher(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
