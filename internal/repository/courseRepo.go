@@ -16,26 +16,26 @@ type ICourseRepository interface {
 }
 
 type CourseRepo struct {
-	db *gorm.DB
+	DB *gorm.DB
 }
 
 func NewCourseRepo(db *gorm.DB) *CourseRepo {
-	return &CourseRepo{db: db}
+	return &CourseRepo{DB: db}
 }
 
 func (repo *CourseRepo) CreateCourse(course *course.Course) error {
-	return repo.db.Create(course).Error
+	return repo.DB.Create(course).Error
 }
 
 func (repo *CourseRepo) GetAllCourses() ([]course.Course, error) {
 	var courses []course.Course
-	err := repo.db.Preload("Courses").Find(&courses).Error
+	err := repo.DB.Preload("Courses").Find(&courses).Error
 	return courses, err
 }
 
 func (repo *CourseRepo) GetCourseByID(id uint) (*course.Course, error) {
 	var course course.Course
-	err := repo.db.First(&course, id).Error
+	err := repo.DB.First(&course, id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -46,12 +46,12 @@ func (repo *CourseRepo) UpdateCourse(id uint, updateCourse *course.Course) error
 
 	var course course.Course
 
-	err := repo.db.First(&course, id).Error
+	err := repo.DB.First(&course, id).Error
 	if err != nil {
 		return err
 	}
 
-	err = repo.db.Model(&course).Updates(updateCourse).Error
+	err = repo.DB.Model(&course).Updates(updateCourse).Error
 	if err != nil {
 		return err
 	}
@@ -61,12 +61,12 @@ func (repo *CourseRepo) UpdateCourse(id uint, updateCourse *course.Course) error
 }
 
 func (repo *CourseRepo) DeleteCourse(id uint) error {
-	return repo.db.Delete(&course.Course{}, id).Error
+	return repo.DB.Delete(&course.Course{}, id).Error
 }
 
 func (repo *CourseRepo) GetCourseByName(name string) (*course.Course, error) {
 	var course course.Course
-	err := repo.db.Where("name = ?", name).First(&course, name).Error
+	err := repo.DB.Where("name = ?", name).First(&course, name).Error
 	if err != nil {
 		return nil, err
 	}
